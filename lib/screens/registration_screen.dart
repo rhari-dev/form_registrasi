@@ -13,6 +13,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
+  final  _nomorTeleponController = TextEditingController();
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
   bool _isLoading = false;
@@ -22,6 +23,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
+    _nomorTeleponController.dispose();
     super.dispose();
   }
 
@@ -76,6 +78,17 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     return null;
   }
 
+  String? _validateNomorTelepon(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Nomor telepon wajib diisi';
+    } else if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
+      return 'Nomor telepon hanya boleh angka';
+    } else if (value.length < 10 || value.length > 13) {
+      return 'Nomor telepon harus 10-13 digit';
+    }
+    return null;
+  }
+
   // Handler submit form
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
@@ -94,7 +107,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             title: const Text('Registrasi Berhasil'),
             content: Text(
               'Selamat, ${_nameController.text}!\n'
-              'Email: ${_emailController.text}',
+              'Email: ${_emailController.text}\n'
+              'Nomor Telepon: ${_nomorTeleponController.text}\n',
             ),
             actions: [
               TextButton(
@@ -118,6 +132,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     _emailController.clear();
     _passwordController.clear();
     _confirmPasswordController.clear();
+    _nomorTeleponController.clear();
   }
 
   @override
@@ -172,6 +187,15 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   prefixIcon: Icons.email,
                   keyboardType: TextInputType.emailAddress,
                   validator: _validateEmail,
+                ),
+                // Field Nomor Telepon
+                CustomTextField(
+                  controller: _nomorTeleponController,
+                  label: 'Nomor Telepon',
+                  hint: 'Masukkan nomor telepon Anda',
+                  prefixIcon: Icons.phone,
+                  keyboardType: TextInputType.phone,
+                  validator: _validateNomorTelepon,
                 ),
                 // Field Password
                 Padding(
